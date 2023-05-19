@@ -28,7 +28,7 @@ import {
         [navigable]="true"
         [height]="500"
         [selectable]="{enabled: true, mode: 'single'}"
-        kendoGridSelectBy="ProductID"
+        [kendoGridSelectBy]="onSelectedKey"
         [(selectedKeys)]="mySelection"
         (selectedKeysChange)="selectId($event)"
         (selectionChange)="changeSelection($event)"
@@ -61,15 +61,14 @@ export class AppComponent {
   public gridView: GridDataResult;
   public items: any[] = sampleProducts;
   public itemIndex = 0;
-  public mySelection: number[] = [1];
+  public mySelection: any[] = ['Chai'];
   public pageSize = 500;
   public filterText;
   public selectedItem;
 
   constructor() {
     this.loadItems();
-    if(this.items)
-      this.selectedItem = this.items[0];
+    if (this.items) this.selectedItem = this.items[0];
   }
 
   ngAfterViewInit() {
@@ -81,6 +80,10 @@ export class AppComponent {
   selectId(e) {
     console.log('selectId', e);
   }
+
+  public onSelectedKey(context: RowArgs): any {  
+    return context.dataItem.ProductName;  
+  }  
 
   //funziona sul click singolo sulla riga (selezione)
   changeSelection(item) {
@@ -115,12 +118,12 @@ export class AppComponent {
   }
 
   private loadItems(): void {
-    if(this.items){
+    if (this.items) {
       this.gridView = {
         data: this.items,
         total: this.items.length,
-      }
-    }else{
+      };
+    } else {
       return;
     }
   }
@@ -139,7 +142,8 @@ export class AppComponent {
           this.loadItems();
         }
         this.itemIndex = this.items.indexOf(this.selectedItem);
-        this.mySelection = [this.itemIndex + 1];
+        this.mySelection = [this.selectedItem.ProductName]
+        //this.mySelection = [this.itemIndex + 1];
         this.scrollToSelected();
         break;
       }
@@ -152,7 +156,8 @@ export class AppComponent {
           this.loadItems();
         }
         this.itemIndex = this.items.indexOf(this.selectedItem);
-        this.mySelection = [this.itemIndex + 1];
+        this.mySelection = [this.selectedItem.ProductName]
+        //this.mySelection = [this.itemIndex + 1];
         this.scrollToSelected();
         break;
       }
